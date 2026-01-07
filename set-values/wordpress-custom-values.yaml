@@ -12,3 +12,9 @@ autoscaling:
   enabled: true
   minReplicas: 2
   maxReplicas: 10
+
+# 5. Change service type from LoadBalancer to NodePort
+# Changing the service type to node port means you don't have to add another
+# kubectl service to expose the service to external users.
+service:
+  type: NodePort  

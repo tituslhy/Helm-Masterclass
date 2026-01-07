@@ -280,10 +280,18 @@ helm get values <release name>
 ## Upgrade helm releases
 After updating the values in a yaml file, run:
 ```
-helm upgrade --reuse-values --values path/to/file.yaml <release-name> <repo-name>/<chart-name> --version <version-number>
+helm upgrade --reuse-values --values path/to/file.yaml <release-name> <repo-name>/<chart-name> --version <version-number> --atomic --cleanup-on-fail --debug --timeout 2m
 ```
 
 The `--reuse-values` flag ensures that we use the same values that have already been deployed in the previous release for the flags that have not been edited.
+
+The `--atomic` flag rollsback to the previous deployment if the target deployment has an issue.
+
+The `cleanup-on-fail` removes resources that were spawned by the failed deployment.
+
+The `debug` streams logs.
+
+The `--timeout` flag sets the timeout duration. The default is 5 minutes so reducing the timeout will allow us to terminate the deployment faster on failure.
 
 ## To see release history
 ```
@@ -295,7 +303,7 @@ To rollback an update:
 ```
 helm rollback <release-name> <revision_number>
 ```
-Check replica sets whenever rolling back, because resources were created even for failed deployments. You have to manually clean up these resources.
+Check replica sets whenever rolling back, because resources were created even for failed deployments. You have to manually clean up these resources. Replica sets are not directly managed by helm but by the deployment - i.e. once the deployment runs (even if it fails) these replica sets are created.
 
 To view replica sets:
 ```
