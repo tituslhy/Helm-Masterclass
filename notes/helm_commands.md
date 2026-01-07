@@ -276,3 +276,45 @@ Double check that your secrets have passed through:
 ```
 helm get values <release name>
 ```
+
+## Upgrade helm releases
+After updating the values in a yaml file, run:
+```
+helm upgrade --reuse-values --values path/to/file.yaml <release-name> <repo-name>/<chart-name> --version <version-number>
+```
+
+The `--reuse-values` flag ensures that we use the same values that have already been deployed in the previous release for the flags that have not been edited.
+
+## To see release history
+```
+helm history <release-name>
+```
+
+## Helm rollback
+To rollback an update:
+```
+helm rollback <release-name> <revision_number>
+```
+Check replica sets whenever rolling back, because resources were created even for failed deployments. You have to manually clean up these resources.
+
+To view replica sets:
+```
+kubectl get rs
+```
+
+output:
+```
+NAME                            DESIRED   CURRENT   READY   AGE
+local-wp-wordpress-5c975958d7   2         2         2       66m
+local-wp-wordpress-686b4cd69    0         0         0       2m35s
+```
+
+Notice that there is one replica set that has zeros for everywhere. This is the failed helm upgrade. You can verify that there is only one deployment:
+```
+kubectl get deploy
+```
+
+Remember to delete unused replica sets:
+```
+kubectl delete rs <replica-set>
+```
