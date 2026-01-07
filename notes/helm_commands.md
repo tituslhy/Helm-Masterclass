@@ -236,3 +236,43 @@ helm install local-wp bitnami/wordpress --version=23.1.20 \
     --set "mariadb.auth.rootPassword=$mariadbRootPassword" \
     --set "mariadb.auth.password=$mariadbUserPassword"
 ```
+
+The even better way:
+1. Create a custom.yaml file with all the key-value pairs
+2. But don't add the literal password into the file - do not commit the secret!
+3. Use a placeholder value:
+```yaml
+existingSecret: custom-wp-credentials
+```
+Where `custom-wp-credentials` is a variable name
+4. Then create the variable in kubectl using:
+```
+kubectl create secret generic custom-wp-credentials --from-literal <key_of_interest>=<value_of_interest>
+```
+
+For example:
+```
+kubectl create secret generic custom-wp-credentials --from-literal wordpress-password=lauropassword
+```
+
+Then running
+```
+kubectl get secret
+```
+will show that the secret has been created.
+
+and running:
+```
+kubectl get secret custom-wp-credentials -o jsonpath='{.data.wordpress-password}' | base64 -d
+```
+will return the exact password.
+
+Then when starting your app,
+```
+helm install <release-name> <repo>/<chart> --version=<version_number> -f path/to/file.yaml
+```
+
+Double check that your secrets have passed through:
+```
+helm get values <release name>
+```

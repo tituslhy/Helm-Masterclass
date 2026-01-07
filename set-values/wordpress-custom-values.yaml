@@ -1,0 +1,6 @@
+# 1. Set our own wordpress username
+wordpressUsername: lauro
+# 2. Set our own wordpress password
+existingSecret: custom-wp-credentials
+# Increase replica count to 3
+replicaCount: 3
