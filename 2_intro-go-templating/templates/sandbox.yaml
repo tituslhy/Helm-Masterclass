@@ -1,3 +1,9 @@
 # I am a YAML comment
-{{- /* I am a go template comment*/ -}}
-test: {{ .Values.test }}
+{{- /* I am a go template comment*/}}
+{{- /* <function name> <arg1> <arg2> ...*/}}
+test: {{ lower .Values.test | replace " " "-" }}
+labels:
+    {{- /* The app label comes from the Release */}}
+    app: {{ .Release.Name }}
+    {{- /* The chart label comes from the Chart information */}}
+    chart: {{ .Chart.Name }}
