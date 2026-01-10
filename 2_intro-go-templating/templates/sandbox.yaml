@@ -1,1 +1,3 @@
+# I am a YAML comment
+{{- /* I am a go template comment*/ -}}
 test: {{ .Values.test }}
