@@ -40,4 +40,7 @@ Using the pipe operator in lieu of chaining:
 test: {{ replace " " "-" .Values.test | lower }}
 ```
 
-THe results of the `replace` function is passed into `lower`
+The results of the `replace` function is passed into `lower`
+
+### Note
+Conditional statement blocks must always have an `{{ end }}`
