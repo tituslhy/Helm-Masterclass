@@ -326,3 +326,37 @@ Remember to delete unused replica sets:
 ```
 kubectl delete rs <replica-set>
 ```
+
+## Helm package
+This command packages a chart into a versioned chart archive file.
+
+```
+helm package <folder_name>
+```
+
+This saves the tar file of the service in the folder.
+
+```
+➜  3_nginx-customized git:(main) ✗ helm package nginx        
+```
+
+Output:
+```
+Successfully packaged chart and saved it to: /Users/tituslim/Documents/2. Personal Learning Folder/DevOps/Helm-Masterclass/3_nginx-customized/nginx-0.1.0.tgz
+```
+
+The filepath (0.1.0) follows the helm chart version. This is a portable artifact that we can share with anyone.
+
+This tar file is everything that we need to install the chart.
+
+```
+helm install local-nginx nginx-0.1.0.tgz 
+```
+
+## Publishing helm charts with GitHub Pages
+1. Create a new repo
+2. Go to GitHub/Settings/Pages. Ensure that the pages is set to build from "root". Click "Save". You should see an initial GitHub Action building the page.
+3. Clone the repo locally
+4. Copy the tgz file created from `helm package` into the cloned repo.
+5. Run ```helm repo index <your_cloned_repo_directory>```. This creates an `index.yaml` file to contain the information of all the charts that are available in the directory.  
+6. Commit and push the new files into the repo so the GitHub Pages Actions will automatically run. Now you can go to "https://<github_repo_url>/index.yaml" to see the index.yaml file, and download the tar file by "https://<github_repo_url>/<tar_file_name>.tgz
