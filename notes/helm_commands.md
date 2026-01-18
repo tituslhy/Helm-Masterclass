@@ -361,3 +361,11 @@ helm install local-nginx nginx-0.1.0.tgz
 5. Run ```helm repo index <your_cloned_repo_directory>```. This creates an `index.yaml` file to contain the information of all the charts that are available in the directory.  
 6. Commit and push the new files into the repo so the GitHub Pages Actions will automatically run. Now you can go to "https://<github_repo_pages_url>/index.yaml" to see the index.yaml file, and download the tar file by "https://<github_repo_pages_url>/<tar_file_name>.tgz
 7. Run ```helm repo add <github_username> <github_repo_pages_url>```.
+
+
+## To create new helm charts
+```
+helm create <folder_name>
+```
+
+This creates many yaml stubs.
