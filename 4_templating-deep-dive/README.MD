@@ -1,7 +1,7 @@
 # Learning Go Templates
 
 ## Template functions and pipelines
-Visit [Helm documentation on functions](https://helm.sh/docs/chart_template_guide/functions_and_pipelines/)
+> Visit [Helm documentation on functions](https://helm.sh/docs/chart_template_guide/function_list)
 
 ```
 list: {{ list 1 2 3 }}
