@@ -8,3 +8,21 @@ app: {{ .Chart.Name }}
 release: {{ .Release.Name }}
 managed-by: "helm"
 {{- end -}}
+
+{{/* Expects a port to be passed as the context */}}
+{{- define "templating-deep-dive.validators.service" -}}
+
+{{/* Port validation */}}
+{{/* Cast port to an integer */}}
+{{- $sanitizedPort := int .port -}}
+{{- if or (lt $sanitizedPort 1) (gt $sanitizedPort 65535) -}}
+{{- fail "Error: Ports must always be between 1 and 65535" -}}
+{{- end -}}
+
+{{/* Service type validation */}}
+{{- $allowedSvcTypes := list "ClusterIP" "NodePort" -}}
+{{- if not (has .type $allowedSvcTypes) -}}
+{{- fail (printf "Invalid service type %s. Supported values are: %s" .type (join ", " $allowedSvcTypes)) -}}
+{{- end -}}
+
+{{- end -}}

@@ -1,4 +1,5 @@
 {{- range $key, $svc := (.Values.services | default dict) }}
+{{ include "templating-deep-dive.validators.service" $svc }}
 ---
 apiVersion: v1
 kind: Service

@@ -89,12 +89,62 @@ The variable `$defaultName` is only accessible in the block of code above (withi
 
 You use `:=` for initial assignment.
 
+## Add validation functions
+```
+{{- if and .Values.securityContext .Values.securityContext.enabled -}}
+{{- $_ := required "securityContext.runAsUser is required when setting securityContext and enabled is true" .Values.securityContext.runAsUser -}}
+{{- $_ := required "securityContext.fsGroup is required when setting securityContext and enabled is true" .Values.securityContext.fsGroup -}}
+{{- end -}}
+```
+Use the special `required` function. Set `$_:=` to prevents the properties from being printed on the yaml. You could add this on top of the file (but if you do this you have to set a $_ variable) or in the yaml file directly, or in a different yaml file to be imported. It's not possible to set this in the _helper.tpl file because it won't be rendered properly.
+
+If doing it inline, change the yaml file's values to:
+```
+runAsUser: {{ required "securityContext.runAsUser is required when setting securityContext and enabled is true" .runAsUser }}
+fsGroup: {{ required "securityContext.fsGroup is required when setting securityContext and enabled is true" .fsGroup }}
+```
+
+If doing it in a different file, create a validation.yaml and paste:
+```
+{{- if and .Values.securityContext .Values.securityContext.enabled -}}
+{{- $_ := required "securityContext.runAsUser is required when setting securityContext and enabled is true" .Values.securityContext.runAsUser -}}
+{{- $_ := required "securityContext.fsGroup is required when setting securityContext and enabled is true" .Values.securityContext.fsGroup -}}
+{{- if int .Values.securityContext.runAsUser | eq 0 -}}
+{{- fail (dict "errorKey" "securityContext.runAsUser" "errorMessage" "Containers cannot be run as root users. \nPlease provide a user id greater than 0." | toJson) -}}
+{{- end -}}
+{{- end -}}
+```
+The `fail` function will always throw a fail message. In this case we are returning a json object to be parsed.
+
+
+## Using `with`
+This sets the value of the `.` variable. So you can just call the values out without typing the full key.
+```
+{{ with .Values.securityContext }}
+          {{- if .enabled -}}
+          securityContext:
+            runAsUser: {{ .runAsUser }}
+            fsGroup: {{ .fsGroup }}
+          {{- end -}}
+          {{- end }}
+```
+
 ### Note
 - Files with an "_" preceding the name will not be rendered in the `helm template` command.
 - In Kubernetes you cannot have strings that are longer than 63 characters so it's common to truncate the string output.
 - Add indentations to always ensure proper yaml or you're going to have issues once helm runs.
 
-When iterating through a list using a `range` function, use `$` instead of `.` within the loop. This is because the meaning of `.` changes as you iterate down. The following code iterates through a list:
+When iterating through a list using a `range` function, use `$` instead of `.` within the loop. This is because the meaning of `.` changes as you iterate down. 
+The services.yaml looks like this:
+```
+services:
+  - type: ClusterIP
+    port: 80
+  - type: NodePort
+    port: 3007
+```
+
+This is arranged in the format of a list. The following code iterates through this list:
 ```
 {{- range $idx, $svc := (.Values.services | default list) }}
 ---
@@ -113,4 +163,34 @@ spec:
 {{- end }}
 ```
 
-Adding the $idx in the Service name ensures that different services have unique names.
+Adding the $idx in the Service name ensures that different services have unique names. But this becomes problematic when we change the order of the services.
+
+The better way to do it is to refactor values.yaml like so:
+```
+services:
+  svc1:  
+    type: ClusterIP
+    port: 80
+  svc2:
+    type: NodePort
+    port: 30007
+```
+
+And then iterate through a dictionary instead:
+```
+{{- range $key, $svc := (.Values.services | default dict) }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "templating-deep-dive.fullname" $ }}-{{ $key }}
+  labels: {{ include "templating-deep-dive.selectorLabels" $ | nindent 4 }}
+spec:
+  type: {{ $svc.type }}
+  selector: {{ include "templating-deep-dive.selectorLabels" $ | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: {{ $svc.port }}
+      targetPort: {{ $.Values.containerPorts.http }}
+{{- end }}
+```
