@@ -9,15 +9,21 @@ release: {{ .Release.Name }}
 managed-by: "helm"
 {{- end -}}
 
-{{/* Expects a port to be passed as the context */}}
-{{- define "templating-deep-dive.validators.service" -}}
-
-{{/* Port validation */}}
+{{/* Port validation function. Expects string or int to be passed as context */}}
+{{- define "templating-deep-dive.validators.portRange" -}}
 {{/* Cast port to an integer */}}
-{{- $sanitizedPort := int .port -}}
+{{- $sanitizedPort := int . -}}
 {{- if or (lt $sanitizedPort 1) (gt $sanitizedPort 65535) -}}
 {{- fail "Error: Ports must always be between 1 and 65535" -}}
 {{- end -}}
+{{- end -}}
+
+
+{{/* Expects a port to be passed as the context */}}
+{{- define "templating-deep-dive.validators.service" -}}
+
+{{/* Port validation using our portRange function */}}
+{{- include "templating-deep-dive.validators.portRange" .port -}}
 
 {{/* Service type validation */}}
 {{- $allowedSvcTypes := list "ClusterIP" "NodePort" -}}
