@@ -1,0 +1,1 @@
+#test value from subchart: {{ include "demo-subchart.fullname" . }}
