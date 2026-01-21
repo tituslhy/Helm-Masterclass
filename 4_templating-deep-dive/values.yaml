@@ -1,3 +1,7 @@
+## @param customName allows to set a custom resource name
+## Defaults to {{ .Release.Name }}-{{ .Chart.Name }}
+customName: ''
+
 ## @param replicaCount: Number of Nginx replicas to deploy
 replicaCount: 3
 environment: production
@@ -11,8 +15,11 @@ image:
 containerPorts:
   http: 80
 
-## Settings for NGINX service. Enabled = True means we deploy
-service:
-  enabled: true
-  type: ClusterIP
-  port: 80
+## Services is a map witht he following schema
+services:
+  svc1:  
+    type: ClusterIP
+    port: 80
+  svc2:
+    type: NodePort
+    port: 30007
