@@ -18,7 +18,6 @@ managed-by: "helm"
 {{- end -}}
 {{- end -}}
 
-
 {{/* Expects a port to be passed as the context */}}
 {{- define "templating-deep-dive.validators.service" -}}
 
