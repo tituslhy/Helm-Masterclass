@@ -60,3 +60,23 @@ Remember to add indentation when printing toYaml so it creates a new line
 ```
 my-dict: {{ dict "primitive" "my string" "complex" (dict "key1" "value1") | toYaml | nindent 2}}
 ```
+
+## _helpers.tpl
+Variable names get repeated quite often in helm charts and this is not recommended. Instead it is better to define a list of variables in a .tpl file and use them in helm charts.
+
+It's convention to use the name of the chart as the first variable defined
+```
+{{- define "<name of helm chart>.fullName" -}}
+<other statements here>
+{{- end -}}
+```
+
+All variable definitions must be in string.
+
+Then in your yaml files, you can write
+{{ include "<name of helm chart>.fullName . }}
+
+### Note
+- Files with an "_" preceding the name will not be rendered in the `helm template` command.
+- In Kubernetes you cannot have strings that are longer than 63 characters so it's common to truncate the string output.
+- Add indentations to always ensure proper yaml or you're going to have issues once helm runs.

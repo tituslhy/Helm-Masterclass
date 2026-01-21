@@ -1,2 +1,18 @@
-test: I am a string
-environment: staging
+## @param replicaCount: Number of Nginx replicas to deploy
+replicaCount: 3
+environment: production
+
+## Settings for Nginx image
+image:
+  name: nginx
+  tag: "1.29.4"
+
+## NGINX container ports
+containerPorts:
+  http: 80
+
+## Settings for NGINX service. Enabled = True means we deploy
+service:
+  enabled: true
+  type: ClusterIP
+  port: 80
