@@ -159,3 +159,8 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Save this as a value to be injected into the sub chart
+# MUST save this with the exact same name as the subchart.
+demo-subchart:
+  customValue: 'Hello from config-store'
