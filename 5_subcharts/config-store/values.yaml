@@ -164,3 +164,6 @@ affinity: {}
 # MUST save this with the exact same name as the subchart.
 demo-subchart:
   customValue: 'Hello from config-store'
+
+global:
+  defaultStorageClass: 'my-custom-storageClass'

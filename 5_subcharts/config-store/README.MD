@@ -29,6 +29,11 @@ helm dependency build
 ```
 rebuilds the charts folder based on the Chart.lock file - in case you accidentally delete the tar file. Note that this command does not update the `Chart.lock` file so do not use this command if you change the dependency version.
 
+### Scopes
+Don't use `global` in your values.yaml - this is a specially scoped value that injects the same value across all subcharts. Do this only if you need to pass a global variable to all sub charts.
+
+But be careful! If there are global variables in the subcharts (for e.g. the PostGreSQL subchart), you'll end up overwriting it which will cause some problems.
+
 ## A note on PostGreSQL Chart
 The release of version 16.6.0 changed the default value for the usePasswordFiles to true in the values.yaml file. This might break the upcoming implementation where we rely on environment variables instead of password files.
 

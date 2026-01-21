@@ -4,3 +4,5 @@ metadata:
   name: {{ include "demo-subchart.fullname" . }}
 data:
   test-value: {{ .Values.customValue }}
+  {{/* Access the global variable from parent's values.yaml */}}
+  test-global-value: {{ .Values.global.defaultStorageClass }}
