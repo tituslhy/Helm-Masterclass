@@ -167,3 +167,6 @@ demo-subchart:
 
 global:
   defaultStorageClass: 'my-custom-storageClass'
+
+tags:
+  database: true
