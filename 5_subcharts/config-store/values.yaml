@@ -160,13 +160,12 @@ tolerations: []
 
 affinity: {}
 
-# Save this as a value to be injected into the sub chart
-# MUST save this with the exact same name as the subchart.
-demo-subchart:
-  customValue: 'Hello from config-store'
-
-global:
-  defaultStorageClass: 'my-custom-storageClass'
-
-tags:
-  database: true
+postgresql:
+  auth:
+    username: config_store_user
+    database: config_store_db
+    existingSecret: postgres-creds
+    usePasswordFiles: false
+    secretKeys:
+      userPasswordKey: password
+  fullnameOverride: postgresql-db
