@@ -19,7 +19,7 @@ metadata:
     ...
   annotations:
     "helm.sh/hook": post-install, post-upgrade
-    "helm.sh/hook-weight": "-1" #defaults to 0
+    "helm.sh/hook-weight": "-1" #The order of execution (from lowest to highest), defaults to 0.
     "helm.sh/hook-delete-policy": hook-succeeded  #defaults to "before-hook-creation"
 ```
 
