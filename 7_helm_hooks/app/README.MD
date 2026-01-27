@@ -28,4 +28,30 @@ As a best practice, specify your hooks in a hooks/ folder and whenever you run:
 ```
 helm upgrade <app-name> <folder or ".">
 ```
-The hooks run
+
+### Handling hook failures
+To see what failed:
+```
+kubectl get job
+```
+
+AND
+
+```
+helm history <helm chart name>
+```
+
+Also consider:
+```
+kubectl get pod
+kubectl describe <pod-name>
+```
+
+This shows metadata of the pod which might explain why it fails.
+
+### To ensure rollback if failure
+Use this command instead:
+```
+helm upgrade <chart-name> <chart-folder> --rollback-on-failure
+```
+The `rollback-on-failure` flag undoes the changes if it fails
