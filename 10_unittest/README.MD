@@ -40,3 +40,5 @@ To make it verbose, add a `-d` tag. You will be able to see debug level logs.
 These unit tests are different from the test hooks inside `./templates/tests/`
 
 All test.yaml files used for unittesting MUST END WITH `_test.yaml`
+
+The unit test plugin does not create any kubernetes resources at all!
